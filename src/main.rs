@@ -1,12 +1,13 @@
-use std::{env, sync::{Arc, Mutex}};
+use std::{env, sync::Arc};
+use chrono::Utc;
 
 use serenity::{async_trait, Client, model::{
     channel::Message,
     gateway::Ready,
     id::ChannelId,
 }, prelude::{
-    Context, EventHandler, TypeMapKey
-}};
+    Context, EventHandler, TypeMapKey,
+}, utils::Color};
 use tokio::sync::RwLock;
 
 pub struct Config {
@@ -63,8 +64,17 @@ impl EventHandler for Handler {
             }
             channels.len() == data.honey_pot_chs.len()
         };
+        if !is_spam { return; }
 
-        if is_spam { println!("A!") }
+        let _ = guild_id.ban_with_reason(&ctx.http, &fired_msg.author, 10, "Because you were considered a troll by the bot.").await;
+
+        // ログのChに通知
+        let _ = ChannelId(897488843421401130).send_message(&ctx.http, |msg| msg.embed(|embed| {
+            embed.title("Troll Detected!").color(Color::from_rgb(245, 93, 93))
+                .field("User", format!("{}({})", fired_msg.author.name, fired_msg.author.id), false)
+                .field("Message Contents", fired_msg.content, false)
+                .timestamp(Utc::now().to_rfc3339())
+        })).await;
     }
 
     async fn ready(&self, _: Context, ready: Ready) {
