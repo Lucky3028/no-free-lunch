@@ -546,6 +546,7 @@ dependencies = [
 name = "no-free-lunch"
 version = "0.1.0"
 dependencies = [
+ "chrono",
  "serenity",
  "tokio",
 ]
