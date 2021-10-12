@@ -1,2 +1,5 @@
 /target
 .env
+
+# なぜかIDEAの設定で出てくる
+scala_settings.xml
