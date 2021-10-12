@@ -49,6 +49,7 @@ struct Handler;
 #[async_trait]
 impl EventHandler for Handler {
     async fn message(&self, ctx: Context, fired_msg: Message) {
+        // DMだとguild_idはNoneになるので条件分岐
         let guild_id = match fired_msg.guild_id {
             Some(id) => id,
             None => {
@@ -93,7 +94,7 @@ impl EventHandler for Handler {
             .ban_with_reason(
                 &ctx.http,
                 &fired_msg.author,
-                10,
+                10, // この数字日数分過去のメッセージが削除される
                 "Because you were considered a troll by the bot.",
             )
             .await;
