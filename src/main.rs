@@ -1,6 +1,6 @@
 use std::{env, sync::Arc};
-use chrono::Utc;
 
+use chrono::Utc;
 use serenity::{async_trait, Client, model::{
     channel::Message,
     gateway::Ready,
