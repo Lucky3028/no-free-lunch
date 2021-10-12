@@ -44,6 +44,11 @@ struct Handler;
 #[async_trait]
 impl EventHandler for Handler {
     async fn message(&self, ctx: Context, fired_msg: Message) {
+        let guild_id = match fired_msg.guild_id {
+            Some(id) => id,
+            None => { return; }
+        };
+        if fired_msg.author.bot { return; }
         let is_spam = {
             let data = ctx.data.read().await;
             let data = data.get::<Configs>().expect("aa").clone();
