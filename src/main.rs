@@ -94,7 +94,7 @@ impl EventHandler for Handler {
             .ban_with_reason(
                 &ctx.http,
                 &fired_msg.author,
-                10, // この数字日数分過去のメッセージが削除される
+                7, // この数字日数分過去のメッセージが削除される
                 "Because you were considered a troll by the bot.",
             )
             .await;
