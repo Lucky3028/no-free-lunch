@@ -72,8 +72,8 @@ impl EventHandler for Handler {
                 let is_sent_by_same_author = !ch_msgs
                     .iter()
                     .filter(|msg| msg.author == fired_msg.author)
-                    .collect::<Vec<_>>()
-                    .is_empty();
+                    .next()
+                    .is_none();
                 let msg_contains_ng_word = ch_msgs.iter().any(|msg| {
                     data.ng_words
                         .iter()
