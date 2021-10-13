@@ -69,11 +69,9 @@ impl EventHandler for Handler {
                     .messages(&ctx.http, |retriver| retriver.limit(20))
                     .await
                     .unwrap_or_default();
-                let is_sent_by_same_author = !ch_msgs
+                let is_sent_by_same_author = ch_msgs
                     .iter()
-                    .filter(|msg| msg.author == fired_msg.author)
-                    .next()
-                    .is_none();
+                    .any(|msg| msg.author == fired_msg.author);
                 let msg_contains_ng_word = ch_msgs.iter().any(|msg| {
                     data.ng_words
                         .iter()
