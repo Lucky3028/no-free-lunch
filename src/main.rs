@@ -54,14 +54,18 @@ impl EventHandler for Handler {
             return;
         }
 
-        let _ = guild_id
+        if let Err(e) = guild_id
             .ban_with_reason(
                 &ctx.http,
                 &fired_msg.author,
                 7, // この数字日数分過去のメッセージが削除される
                 "Because you were considered a troll by the bot.",
             )
-            .await;
+            .await
+        {
+            // TODO: コンソールではなくEmbedで知らせる
+            eprintln!("err: {}", e);
+        };
 
         // ログのChに通知
         let _ = ChannelId(897488843421401130)
