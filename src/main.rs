@@ -1,48 +1,14 @@
-use std::{env, sync::Arc};
-
 use chrono::Utc;
+use no_free_lunch::{Config, GlobalConfigs};
 use serenity::{
     async_trait,
     model::{channel::Message, gateway::Ready, id::ChannelId},
-    prelude::{Context, EventHandler, TypeMapKey},
+    prelude::{Context, EventHandler},
     utils::Color,
     Client,
 };
+use std::{env, sync::Arc};
 use tokio::sync::RwLock;
-
-pub struct Config {
-    pub honey_pot_chs: Vec<ChannelId>,
-    pub ng_words: Vec<String>,
-}
-
-impl Config {
-    fn new() -> Self {
-        Config {
-            honey_pot_chs: Vec::new(),
-            ng_words: Vec::new(),
-        }
-    }
-}
-
-impl Default for Config {
-    fn default() -> Self {
-        let channel_ids: Vec<u64> =
-            vec![896694513031086112, 896694568265863178, 896694584808198154];
-        Config {
-            honey_pot_chs: channel_ids.iter().map(|id| ChannelId::from(*id)).collect(),
-            ng_words: vec!["free", "nitro"]
-                .iter()
-                .map(|str| str.to_string().to_lowercase())
-                .collect(),
-        }
-    }
-}
-
-struct Configs;
-
-impl TypeMapKey for Configs {
-    type Value = Arc<RwLock<Config>>;
-}
 
 struct Handler;
 
@@ -61,7 +27,7 @@ impl EventHandler for Handler {
         }
         let is_spam = {
             let data = ctx.data.read().await;
-            let data = data.get::<Configs>().expect("aa").clone();
+            let data = data.get::<GlobalConfigs>().expect("aa").clone();
             let data = data.read().await;
             let mut channels: Vec<&ChannelId> = Vec::new();
             for id in data.honey_pot_chs.iter() {
@@ -139,7 +105,7 @@ async fn main() {
     {
         let mut data = client.data.write().await;
 
-        data.insert::<Configs>(Arc::new(RwLock::new(Config::default())));
+        data.insert::<GlobalConfigs>(Arc::new(RwLock::new(Config::default())));
     }
 
     if let Err(why) = client.start().await {
