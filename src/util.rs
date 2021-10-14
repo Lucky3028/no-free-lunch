@@ -1,14 +1,14 @@
 use chrono::Utc;
 use serenity::{builder::CreateEmbed, utils::Color};
 
-pub trait MyEmbed {
+pub trait DiscordEmbedExt {
     fn time_footer(&mut self) -> CreateEmbed;
     fn default_color(&mut self) -> CreateEmbed;
     fn success_color(&mut self) -> CreateEmbed;
     fn failure_color(&mut self) -> CreateEmbed;
 }
 
-impl MyEmbed for CreateEmbed {
+impl DiscordEmbedExt for CreateEmbed {
     fn time_footer(&mut self) -> CreateEmbed {
         self.timestamp(Utc::now().to_rfc3339()).to_owned()
     }
