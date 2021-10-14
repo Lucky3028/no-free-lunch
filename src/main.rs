@@ -1,12 +1,15 @@
-use no_free_lunch::{util::discord_embeds, Config, GlobalConfigs};
+use std::{env, sync::Arc};
+
 use serenity::{
     async_trait,
+    builder::CreateEmbed,
     model::{channel::Message, gateway::Ready, id::ChannelId},
     prelude::{Context, EventHandler},
     Client,
 };
-use std::{env, sync::Arc};
 use tokio::sync::RwLock;
+
+use no_free_lunch::{util::DiscordEmbedExt, Config, GlobalConfigs};
 
 struct Handler;
 
@@ -51,7 +54,7 @@ impl EventHandler for Handler {
             return;
         }
 
-        if let Err(e) = guild_id
+        let mut embed = match guild_id
             .ban_with_reason(
                 &ctx.http,
                 &fired_msg.author,
@@ -60,22 +63,26 @@ impl EventHandler for Handler {
             )
             .await
         {
-            // TODO: コンソールではなくEmbedで知らせる
-            eprintln!("err: {}", e);
+            Ok(_) => CreateEmbed::default()
+                .description("Succeeded in banning the user.")
+                .success_color(),
+            Err(err) => CreateEmbed::default()
+                .description(format!("Failed to ban the user. Error: {}", err))
+                .failure_color(),
         };
 
         // ログのChに通知
         let _ = ChannelId(897488843421401130)
             .send_message(&ctx.http, |msg| {
-                let embed = discord_embeds::default_failure_embed()
+                let embed = embed
                     .title("Troll Detected!")
                     .field(
                         "User",
-                        format!("{}({})", fired_msg.author.tag(), fired_msg.author.id),
+                        format!("{} ({})", fired_msg.author.tag(), fired_msg.author.id),
                         false,
                     )
                     .field("Message Contents", fired_msg.content, false)
-                    .to_owned();
+                    .time_footer();
                 msg.set_embed(embed)
             })
             .await;
