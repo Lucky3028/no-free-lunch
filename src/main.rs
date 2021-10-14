@@ -1,10 +1,8 @@
-use chrono::Utc;
-use no_free_lunch::{Config, GlobalConfigs};
+use no_free_lunch::{util::discord_embeds, Config, GlobalConfigs};
 use serenity::{
     async_trait,
     model::{channel::Message, gateway::Ready, id::ChannelId},
     prelude::{Context, EventHandler},
-    utils::Color,
     Client,
 };
 use std::{env, sync::Arc};
@@ -69,18 +67,16 @@ impl EventHandler for Handler {
         // ログのChに通知
         let _ = ChannelId(897488843421401130)
             .send_message(&ctx.http, |msg| {
-                msg.embed(|embed| {
-                    embed
-                        .title("Troll Detected!")
-                        .color(Color::from_rgb(245, 93, 93))
-                        .field(
-                            "User",
-                            format!("{}({})", fired_msg.author.name, fired_msg.author.id),
-                            false,
-                        )
-                        .field("Message Contents", fired_msg.content, false)
-                        .timestamp(Utc::now().to_rfc3339())
-                })
+                let embed = discord_embeds::default_failure_embed()
+                    .title("Troll Detected!")
+                    .field(
+                        "User",
+                        format!("{}({})", fired_msg.author.tag(), fired_msg.author.id),
+                        false,
+                    )
+                    .field("Message Contents", fired_msg.content, false)
+                    .to_owned();
+                msg.set_embed(embed)
             })
             .await;
     }
