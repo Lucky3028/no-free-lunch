@@ -14,7 +14,7 @@ WORKDIR /tmp/app
 ## Build Base Library with Cargo.toml/lock
 COPY --chown=rust:rust Cargo.toml ./Cargo.toml
 COPY --chown=rust:rust Cargo.lock ./Cargo.lock
-COPY --chown=rust:rust ./src/* ./src/*
+COPY --chown=rust:rust ./src/ ./src/
 RUN cargo build --release && strip /tmp/app/target/x86_64-unknown-linux-musl/release/no-free-lunch
 
 # executor
