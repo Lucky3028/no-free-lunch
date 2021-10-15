@@ -31,6 +31,9 @@ jobs:
             ~/.cargo/git
             target
           key: ${{ runner.os }}-cargo-${{ env.cache-version }}-${{ github.ref }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            - ${{ runner.os }}-cargo-${{ env.cache-version }}-${{ github.ref }}-
+            - ${{ runner.os }}-cargo-${{ env.cache-version }}-
 
       - name: Build crate
         run: cargo build --release
