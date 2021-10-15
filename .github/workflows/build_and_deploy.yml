@@ -20,15 +20,6 @@ jobs:
           registry: ghcr.io
           username: lucky3028
           password: ${{ secrets.GHCR_PAT }}
-      - name: Prepare dummy
-        run: |
-          curl -s https://api.github.com/repos/Lucky3028/create-dummy-toml/releases/latest \
-            | grep "browser_download_url" \
-            | cut -d : -f 2,3 \
-            | tr -d \" \
-            | wget -qi -
-          chmod u+x create-dummy-toml
-          ./create-dummy-toml
       - name: Build builder image
         run: docker build --target builder --cache-from $IMAGE:builder -t $IMAGE:builder --build-arg BUILDKIT_INLINE_CACHE=1 .
       - name: Build image
