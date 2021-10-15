@@ -8,7 +8,7 @@ jobs:
     env:
       DOCKER_BUILDKIT: 1
       CARGO_INCREMENTAL: 1
-      IMAGE: ghcr.io/lucky3028/no-free-lunch
+      IMAGE: ghcr.io/lucky3028/no-free-lunch_single
     steps:
       - uses: actions/checkout@v2
         with:
@@ -41,5 +41,4 @@ jobs:
       - name: Build image
         run: docker build -t $IMAGE:latest --build-arg BUILDKIT_INLINE_CACHE=1 -f Dockerfile2 .
       - name: Push image
-        if: github.ref == 'refs/heads/main'
         run: docker push $IMAGE:latest
