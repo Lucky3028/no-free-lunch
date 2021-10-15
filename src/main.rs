@@ -67,7 +67,8 @@ impl EventHandler for Handler {
                 .description("Succeeded in banning the user.")
                 .success_color(),
             Err(err) => CreateEmbed::default()
-                .description(format!("Failed to ban the user. Error: {}", err))
+                .description("Failed to ban the user.")
+                .field("Error", err, false)
                 .failure_color(),
         };
 
