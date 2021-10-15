@@ -15,7 +15,6 @@ WORKDIR /tmp/app
 COPY --chown=rust:rust Cargo.toml ./Cargo.toml
 COPY --chown=rust:rust Cargo.lock ./Cargo.lock
 COPY --chown=rust:rust ./src/* ./src/
-RUN ls -la ./src
 RUN cargo build --release && strip ./target/x86_64-unknown-linux-musl/release/no-free-lunch
 
 # executor
