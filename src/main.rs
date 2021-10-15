@@ -73,7 +73,7 @@ impl EventHandler for Handler {
         };
 
         // ログのChに通知
-        let _ = ChannelId(897488843421401130)
+        let _ = ChannelId(896985586206920755)
             .send_message(&ctx.http, |msg| {
                 let embed = embed
                     .title("Troll Detected!")
