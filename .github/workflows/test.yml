@@ -16,5 +16,5 @@ jobs:
           registry: ghcr.io
           username: lucky3028
           password: ${{ secrets.GHCR_PAT }}
-      - run: docker build --target builder --cache-from $IMAGE:builder -t $IMAGE:builder --build-arg BUILDKIT_INLINE_CACHE=1 .
-      - run: docker build --cache-from $IMAGE:builder --cache-from $IMAGE:latest -t $IMAGE:latest --build-arg BUILDKIT_INLINE_CACHE=1 .
+      - run: docker build --target builder --cache-from $IMAGE:builder -t $IMAGE:builder --build-arg BUILDKIT_INLINE_CACHE=1 -f Dockerfile_test .
+      - run: docker build --cache-from $IMAGE:builder --cache-from $IMAGE:latest -t $IMAGE:latest --build-arg BUILDKIT_INLINE_CACHE=1 -f Dockerfile_test .
