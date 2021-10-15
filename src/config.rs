@@ -8,7 +8,7 @@ pub struct Config {
 impl Default for Config {
     fn default() -> Self {
         let channel_ids: Vec<u64> =
-            vec![896694513031086112, 896694568265863178, 896694584808198154];
+            vec![896728031828258816, 896728065013612574];
         let ng_words = vec!["free", "nitro"];
         Config {
             honey_pot_chs: channel_ids.iter().map(|id| ChannelId::from(*id)).collect(),
