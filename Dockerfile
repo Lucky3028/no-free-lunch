@@ -13,7 +13,7 @@ RUN cargo build --release
 
 RUN rm -rf ./src
 
-## Build Base Library with Cargo.toml/lock
+# Build Base Library with Cargo.toml/lock
 COPY --chown=rust:rust Cargo.toml ./Cargo.toml
 COPY --chown=rust:rust Cargo.lock ./Cargo.lock
 COPY --chown=rust:rust ./src/ ./src/
