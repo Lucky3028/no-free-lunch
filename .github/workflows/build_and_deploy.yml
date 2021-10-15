@@ -66,6 +66,10 @@ jobs:
           echo "DISCORD_TOKEN=${{ secrets.DISCORD_TOKEN }}" > .env
           echo "APPLICATION_ID=${{ secrets.APPLICATION_ID }}" >> .env
           cd ../
+      - uses: actions/download-artifact@v2
+        with:
+          name: my-artifact
+          path: ./attachments
       - name: Install SSH Key
         run: |
           mkdir -p ~/.ssh
