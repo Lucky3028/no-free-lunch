@@ -65,7 +65,8 @@ jobs:
           chmod 700 ~/.ssh
           echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-      - name: Rsync .env, docker-compose.yml, and restart bash
+      - run: sed -i 's/ExecStart=/ExecStart=${{ secrets.SERVER_SSH_PATH }}\/restart-bot.sh/ run-no-free-lunch.service
+      - name: Rsync .env and restart bash
         run: rsync -auvz --delete -e "ssh -p ${{ secrets.SERVER_SSH_PORT }} -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" ./attachments/ ${{ secrets.SERVER_SSH_USER }}@${{ secrets.SERVER_SSH_ADDRESS }}:${{ secrets.SERVER_SSH_PATH }}
-      - name: Restart docker
-        run: ssh -p ${{ secrets.SERVER_SSH_PORT }} -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.SERVER_SSH_USER }}@${{ secrets.SERVER_SSH_ADDRESS }} "cd ${{ secrets.SERVER_SSH_PATH }};chmod +x restart-docker.sh;./restart-docker.sh"
+      - name: Restart bot
+        run: ssh -p ${{ secrets.SERVER_SSH_PORT }} -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.SERVER_SSH_USER }}@${{ secrets.SERVER_SSH_ADDRESS }} "cd ${{ secrets.SERVER_SSH_PATH }};chmod +x restart-bot.sh;./restart-bot.sh"

@@ -1,0 +1,11 @@
+[Unit]
+Description=run-no-free-lunch
+
+[Service]
+Type=simple
+ExecStart=
+ExecStop=/bin/kill -WINCH ${MAINPID}
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
