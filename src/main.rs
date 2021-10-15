@@ -26,6 +26,7 @@ impl EventHandler for Handler {
         if fired_msg.author.bot {
             return;
         }
+        println!("detected? {} {}", fired_msg.author.tag(), fired_msg.content);
         let is_spam = {
             let data = ctx.data.read().await;
             let data = data.get::<GlobalConfigs>().expect("aa").clone();
