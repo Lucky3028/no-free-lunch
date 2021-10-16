@@ -16,7 +16,6 @@ struct Handler;
 #[async_trait]
 impl EventHandler for Handler {
     async fn message(&self, ctx: Context, fired_msg: Message) {
-        println!("detected? {} {}", fired_msg.author.tag(), fired_msg.content);
         // DMだとguild_idはNoneになるので条件分岐
         let guild_id = match fired_msg.guild_id {
             Some(id) => id,
