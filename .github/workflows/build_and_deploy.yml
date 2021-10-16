@@ -59,7 +59,7 @@ jobs:
       - name: Write a path into systemd unit file
         run: |
           UNIT_FILE=./attachments/run-no-free-lunch.service
-          sed -i "s/ExecStart=/ExecStart=${{ secrets.SERVER_SSH_PATH }}\/restart-bot.sh/" $UNIT_FILE
+          sed -i "s/ExecStart=/ExecStart=${{ secrets.SERVER_SSH_PATH }}\/restart-bot\.sh/" ./attachments/run-no-free-lunch.service
       - run: sed -i "s/WorkingDirectory=/WorkingDirectory=${{ secrets.SERVER_SSH_PATH }}/" ./attachments/run-no-free-lunch.service
 
       - name: Download binary
