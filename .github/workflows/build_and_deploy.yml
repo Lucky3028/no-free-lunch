@@ -1,18 +1,16 @@
-name: Build and Publish Docker
+name: Build and Deploy
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   build_and_publish_images:
     runs-on: ubuntu-latest
-    env:
-      DOCKER_BUILDKIT: 1
-      CARGO_INCREMENTAL: 1
-      IMAGE: ghcr.io/lucky3028/no-free-lunch_single
     steps:
       - uses: actions/checkout@v2
         with:
@@ -35,10 +33,13 @@ jobs:
             - ${{ runner.os }}-cargo-${{ env.cache-version }}-${{ github.ref }}-
             - ${{ runner.os }}-cargo-${{ env.cache-version }}-
 
-      - name: Build crate
+      - name: Build binary
+        env:
+          CARGO_INCREMENTAL: 1
         run: cargo build --release
 
-      - uses: actions/upload-artifact@v2
+      - name: Upload binary
+        uses: actions/upload-artifact@v2
         with:
           name: my-artifact
           path: ./target/release/no-free-lunch
@@ -49,13 +50,20 @@ jobs:
     if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v2
-      - name: Make .env
+
+      - name: Write environments into .env
         run: |
-          cd attachments
-          echo "DISCORD_TOKEN=${{ secrets.DISCORD_TOKEN }}" > .env
-          echo "APPLICATION_ID=${{ secrets.APPLICATION_ID }}" >> .env
-          cd ../
-      - uses: actions/download-artifact@v2
+          ENV_FILE=./attachments/.env
+          echo "DISCORD_TOKEN=${{ secrets.DISCORD_TOKEN }}" > $ENV_FILE
+          echo "APPLICATION_ID=${{ secrets.APPLICATION_ID }}" >> $ENV_FILE
+      - name: Write a path into systemd unit file
+        run: |
+          UNIT_FILE=./attachments/run-no-free-lunch.service
+          sed -i "s/ExecStart=/ExecStart=${{ secrets.SERVER_SSH_PATH }}\/restart-bot.sh/" $UNIT_FILE
+          sed -i "s/WorkingDirectory=/WorkingDirectory=${{ secrets.SERVER_SSH_PATH }}" $UNIT_FILE
+
+      - name: Download binary
+        uses: actions/download-artifact@v2
         with:
           name: my-artifact
           path: ./attachments
@@ -65,8 +73,8 @@ jobs:
           chmod 700 ~/.ssh
           echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-      - run: sed -i 's/ExecStart=/ExecStart=${{ secrets.SERVER_SSH_PATH }}\/restart-bot.sh/ run-no-free-lunch.service
-      - name: Rsync .env and restart bash
+
+      - name: Rsync files
         run: rsync -auvz --delete -e "ssh -p ${{ secrets.SERVER_SSH_PORT }} -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" ./attachments/ ${{ secrets.SERVER_SSH_USER }}@${{ secrets.SERVER_SSH_ADDRESS }}:${{ secrets.SERVER_SSH_PATH }}
       - name: Restart bot
-        run: ssh -p ${{ secrets.SERVER_SSH_PORT }} -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.SERVER_SSH_USER }}@${{ secrets.SERVER_SSH_ADDRESS }} "cd ${{ secrets.SERVER_SSH_PATH }};chmod +x restart-bot.sh;./restart-bot.sh"
+        run: ssh -p ${{ secrets.SERVER_SSH_PORT }} -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.SERVER_SSH_USER }}@${{ secrets.SERVER_SSH_ADDRESS }} "cd ${{ secrets.SERVER_SSH_PATH }};chmod +x prepare-bot.sh;./prepare-bot.sh"

@@ -1,11 +1,13 @@
 [Unit]
-Description=run-no-free-lunch
+Description=DiscordBot: NoFreeLunch
 
 [Service]
 Type=simple
+# CIで置き換えるので、WorkingDirectoryとExecStartは記入不要
+WorkingDirectory=
 ExecStart=
 ExecStop=/bin/kill -WINCH ${MAINPID}
 Restart=always
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
