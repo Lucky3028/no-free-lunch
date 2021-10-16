@@ -60,7 +60,7 @@ jobs:
         run: |
           UNIT_FILE=./attachments/run-no-free-lunch.service
           sed -i "s/ExecStart=/ExecStart=${{ secrets.SERVER_SSH_PATH }}\/restart-bot.sh/" $UNIT_FILE
-          sed -i "s/WorkingDirectory=/WorkingDirectory=${{ secrets.SERVER_SSH_PATH }}" $UNIT_FILE
+          sed -i "s/WorkingDirectory=/WorkingDirectory=${{ secrets.SERVER_SSH_PATH }}/" $UNIT_FILE
 
       - name: Download binary
         uses: actions/download-artifact@v2
