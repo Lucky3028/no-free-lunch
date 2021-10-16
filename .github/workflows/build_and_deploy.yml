@@ -75,6 +75,10 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
 
       - name: Rsync files
-        run: rsync -auvz --delete -e "ssh -p ${{ secrets.SERVER_SSH_PORT }} -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" ./attachments/ ${{ secrets.SERVER_SSH_USER }}@${{ secrets.SERVER_SSH_ADDRESS }}:${{ secrets.SERVER_SSH_PATH }}
+        run: rsync -auvz --delete -e \
+          "ssh -p ${{ secrets.SERVER_SSH_PORT }} -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" ./attachments/ \
+          ${{ secrets.SERVER_SSH_USER }}@${{ secrets.SERVER_SSH_ADDRESS }}:${{ secrets.SERVER_SSH_PATH }}
       - name: Restart bot
-        run: ssh -p ${{ secrets.SERVER_SSH_PORT }} -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.SERVER_SSH_USER }}@${{ secrets.SERVER_SSH_ADDRESS }} "cd ${{ secrets.SERVER_SSH_PATH }};chmod +x prepare-bot.sh;./prepare-bot.sh"
+        run: ssh -p ${{ secrets.SERVER_SSH_PORT }} -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \
+          ${{ secrets.SERVER_SSH_USER }}@${{ secrets.SERVER_SSH_ADDRESS }} \
+          "cd ${{ secrets.SERVER_SSH_PATH }};chmod +x prepare-bot.sh;./prepare-bot.sh"
